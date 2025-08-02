@@ -1,6 +1,5 @@
 const userService = require('../services/userService')
-const jwt = require('../middleware/jwt')
-const axios = require('axios');
+const jwt = require('../utilities/jwt')
 
 exports.register = async (req, res) => {
     try {
@@ -13,25 +12,13 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const user = await userService.login(req.body)
-
-        const accessToken = jwt.generateAccessToken(user)
-        const refreshToken = jwt.generateRefreshToken(user)
-
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            maxAge: 24*60*60*1000
-        })
-        res.json({message:'Login successful',
-            accessToken})
+        await userService.login(req.body)
     } catch (err) {
         res.status(401).send(err.message)
     }
 }
 
 exports.logout = async (req,res) => {
-    res.clearCookie('refreshToken',{
-        httpOnly:true,
-    })
+    await userService.logout()
     res.send("Logged out")
 }

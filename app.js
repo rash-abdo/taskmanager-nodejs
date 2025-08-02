@@ -3,7 +3,7 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const app = express()
 const authMiddleware = require('./middleware/authMiddleware')
-const jwt = require('./middleware/jwt')
+const jwt = require('./utilities/jwt')
 
 const userRoutes = require('./routes/userRoutes')
 const taskRoutes = require('./routes/taskRoutes')
