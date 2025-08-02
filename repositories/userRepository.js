@@ -1,45 +1,30 @@
-const db = require('../data/db')
+const { User } = require('../models');
 
-exports.createUser = (username, hashedPassword, admin) => {
-    return new Promise((resolve, reject) => {
-        db.query(
-            'INSERT INTO users (username, password, admin) VALUES (?, ?, ?)',
-            [username, hashedPassword,admin],
-            (err, result) => {
-                if (err) return reject(err)
-                resolve(result.insertId)
-            }
-        )
-    })
-}
+// Create user
+exports.createUser = async (username, hashedPassword, admin = false) => {
+  try {
+    const user = await User.create({ username, password: hashedPassword, admin });
+    return user.id;
+  } catch (err) {
+    throw err;
+  }
+};
 
-exports.storeFingerprint = (hashedPassword) => {
-    return new Promise((resolve,reject) => {
-        db.query(
-            'INSERT INTO password_fingerprint (pass) VALUES (?)',
-            [hashedPassword],
-            (err,result) => {
-                if (err) return reject(err)
-                resolve(result.insertId)
-            }
-        )
-    })
-}
+// Find user by username
+exports.findByUsername = async (username) => {
+  try {
+    const user = await User.findOne({ where: { username } });
+    return user;
+  } catch (err) {
+    throw err;
+  }
+};
 
-exports.findByUsername = (username) => {
-    return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
-            if (err) return reject(err)
-            resolve(results[0])
-        })
-    })
-}
-
-exports.delete_account = (userId) => {
-    return new Promise((resolve,reject) => {
-        db.query('DELETE FROM users WHERE id = ?',[userId],(err,results) => {
-            if (err) return reject(err)
-            resolve(results)
-        })
-    })
-}
+// Delete user by ID
+exports.delete_account = async (userId) => {
+  try {
+    await User.destroy({ where: { id: userId } });
+  } catch (err) {
+    throw err;
+  }
+};
