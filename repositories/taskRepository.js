@@ -1,50 +1,46 @@
-const db = require('../data/db')
+const { Task } = require('../models');
 
-//Get all tasks for a user
-exports.getAllTasks = (userId) => {
-    return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM tasks WHERE user_id = ?', [userId], (err, tasks) => {
-            if (err) return reject(err)
-            resolve(tasks)
-        })
-    })
-}
-//Add a new task for a user
-exports.addTask = (userId, title) => {
-    return new Promise((resolve, reject) => {
-        db.query(
-            'INSERT INTO tasks (user_id, title) VALUES (?, ?)',
-            [userId, title],
-            (err, result) => {
-                if (err) return reject(err)
-                resolve({ id: result.insertId, title, completed: false })
-            }
-        )
-    })
-}
-//Update an existing task by ID and user ID
-exports.updateTask = (taskId, userId, { title, completed }) => {
-    return new Promise((resolve, reject) => {
-        db.query(
-            'UPDATE tasks SET title = ?, completed = ? WHERE id = ? AND user_id = ?',
-            [title, completed, taskId, userId],
-            (err, result) => {
-                if (err) return reject(err)
-                resolve(result.affectedRows > 0)
-            }
-        )
-    })
-}
-//Delete a task by ID and user ID
-exports.deleteTask = (taskId, userId) => {
-    return new Promise((resolve, reject) => {
-        db.query(
-            'DELETE FROM tasks WHERE id = ? AND user_id = ?',
-            [taskId, userId],
-            (err, result) => {
-                if (err) return reject(err)
-                resolve(result.affectedRows > 0)
-            }
-        )
-    })
-}
+// Get all tasks for a user
+exports.getAllTasks = async (userId) => {
+  try {
+    const tasks = await Task.findAll({ where: { userId } });
+    return tasks;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// Add a new task for a user
+exports.addTask = async (userId, title) => {
+  try {
+    const task = await Task.create({ userId, title });
+    return task; // includes id, title, completed
+  } catch (err) {
+    throw err;
+  }
+};
+
+// Update an existing task by ID and user ID
+exports.updateTask = async (taskId, userId, { title, completed }) => {
+  try {
+    const [updatedRows] = await Task.update(
+      { title, completed },
+      { where: { id: taskId, userId } }
+    );
+    return updatedRows > 0; // true if update happened
+  } catch (err) {
+    throw err;
+  }
+};
+
+// Delete a task by ID and user ID
+exports.deleteTask = async (taskId, userId) => {
+  try {
+    const deletedRows = await Task.destroy({
+      where: { id: taskId, userId }
+    });
+    return deletedRows > 0; // true if deletion happened
+  } catch (err) {
+    throw err;
+  }
+};
