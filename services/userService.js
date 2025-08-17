@@ -11,6 +11,8 @@ exports.register = async ({username, password, admin}) => {
 exports.login = async ({ username, password }) => {
     let user = await userRepo.findByUsername(username)
     if (!user) throw new Error('unregistered user')
+        
+    if (user.blocked) throw new Error('user is Blocked')
 
     const match = await bcrypt.compare(password, user.password)
     if (!match) throw new Error('wrong password')
