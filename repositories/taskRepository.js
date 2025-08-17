@@ -1,9 +1,9 @@
-const { Task } = require('../models');
+const Task = require('../models/task');
 
 // Get all tasks for a user
 exports.getAllTasks = async (userId) => {
   try {
-    const tasks = await Task.findAll({ where: { userId } });
+    const tasks = await Task.find({userId : userId});
     return tasks;
   } catch (err) {
     throw err;
@@ -13,34 +13,46 @@ exports.getAllTasks = async (userId) => {
 // Add a new task for a user
 exports.addTask = async (userId, title) => {
   try {
-    const task = await Task.create({ userId, title });
-    return task; // includes id, title, completed
+  await Task.create({ userId, title });
   } catch (err) {
     throw err;
   }
 };
 
-// Update an existing task by ID and user ID
-exports.updateTask = async (taskId, userId, { title, completed }) => {
+// Update an existing task
+exports.updateTask = async (taskId, title) => {
   try {
-    const [updatedRows] = await Task.update(
-      { title, completed },
-      { where: { id: taskId, userId } }
-    );
-    return updatedRows > 0; // true if update happened
+  await Task.updateOne({_id : taskId},{ title : title })
   } catch (err) {
     throw err;
   }
 };
+
+// Check a task done or undone
+exports.checkDone = async (taskId) => {
+  try{
+    const task = await Task.findById(taskId)
+    task.checked = !task.checked
+    await task.save()
+  } catch (err){
+    throw err
+  }
+}
 
 // Delete a task by ID and user ID
-exports.deleteTask = async (taskId, userId) => {
+exports.deleteTask = async (taskId) => {
   try {
-    const deletedRows = await Task.destroy({
-      where: { id: taskId, userId }
-    });
-    return deletedRows > 0; // true if deletion happened
+  await Task.deleteOne({_id : taskId})
   } catch (err) {
     throw err;
   }
 };
+
+// Delete all tasks
+exports.deleteAllTasks = async (userId) => {
+  try{
+    await Task.deleteMany({userId:userId})
+  } catch (err) {
+    throw err
+  }
+}

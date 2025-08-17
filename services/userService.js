@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const userRepo = require('../repositories/userRepository')
 const jwt = require('../utilities/jwt')
+const taskRepo = require('../repositories/taskRepository')
 
 exports.register = async ({username, password, admin}) => {
     const hashed = await bcrypt.hash(password, 10)
@@ -23,5 +24,6 @@ exports.login = async ({ username, password }) => {
 
 exports.delete = async (userId) => {
     userRepo.delete_account(userId)
+    taskRepo.deleteAllTasks(userId)
 }
 
