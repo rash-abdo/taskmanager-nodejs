@@ -1,7 +1,7 @@
 const Task = require('../models/task');
 
 // Get all tasks for a user
-exports.getAllTasks = async (userId) => {
+exports.getTasks = async (userId) => {
   try {
     const tasks = await Task.find({userId : userId});
     return tasks;
@@ -13,7 +13,7 @@ exports.getAllTasks = async (userId) => {
 // Add a new task for a user
 exports.addTask = async (userId, title) => {
   try {
-  await Task.create({ userId, title });
+    await Task.create({ userId, title });
   } catch (err) {
     throw err;
   }
@@ -22,7 +22,7 @@ exports.addTask = async (userId, title) => {
 // Update an existing task
 exports.updateTask = async (taskId, title) => {
   try {
-  await Task.updateOne({_id : taskId},{ title : title })
+    await Task.updateOne({_id : taskId},{ title : title })
   } catch (err) {
     throw err;
   }
@@ -39,10 +39,10 @@ exports.checkDone = async (taskId) => {
   }
 }
 
-// Delete a task by ID and user ID
+// Delete a task by ID
 exports.deleteTask = async (taskId) => {
   try {
-  await Task.deleteOne({_id : taskId})
+    await Task.deleteOne({_id : taskId})
   } catch (err) {
     throw err;
   }

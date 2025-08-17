@@ -13,6 +13,15 @@ exports.createUser = async (username, hashedPassword, admin=false, blocked=false
   }
 };
 
+//find user by ID
+exports.findById = async(userId) => {
+  try{
+    return await User.findById(userId)
+  } catch (err) {
+    throw err
+  }
+}
+
 // Find user by username
 exports.findByUsername = async (username) => {
   try {

@@ -1,7 +1,7 @@
 const taskRepo = require('../repositories/taskRepository')
 
-exports.getAllTasks = (userId) => {
-    return taskRepo.getAllTasks(userId)
+exports.getTasks = (userId) => {
+    return taskRepo.getTasks(userId)
 }
 exports.addTask = (userId, title) => {
     taskRepo.addTask(userId, title)
