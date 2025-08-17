@@ -20,7 +20,7 @@ exports.addTask = async (req, res) => {
 
 exports.updateTask = async (req, res) => {
     try {
-        await taskService.updateTask(req.params.id, req.user.id, req.body)
+        await taskService.updateTask(req.params.id, req.body)
         res.send('Task updated')
     } catch (err) {
         res.status(500).send(err.message)
@@ -29,8 +29,17 @@ exports.updateTask = async (req, res) => {
 
 exports.deleteTask = async (req, res) => {
     try {
-        await taskService.deleteTask(req.params.id, req.user.id)
+        await taskService.deleteTask(req.params.id)
         res.send('Task deleted')
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+exports.checkDone = async (req,res) => {
+    try{
+        await taskService.checkDone(req.params.id)
+        res.send("Task completed")
     } catch (err) {
         res.status(500).send(err.message)
     }
