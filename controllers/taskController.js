@@ -1,8 +1,8 @@
 const taskService = require('../services/taskService')
 
-exports.getAllTasks = async (req, res) => {
+exports.getTasks = async (req, res) => {
     try {
-        const tasks = await taskService.getAllTasks(req.user.id)
+        const tasks = await taskService.getTasks(req.user.id)
         res.json(tasks)
     } catch (err) {
         res.status(500).send(err.message)
